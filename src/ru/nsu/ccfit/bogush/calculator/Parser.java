@@ -37,19 +37,29 @@ public class Parser {
             result += sign * parseAtom();
             type = currentLexeme.getType();
         }
-        currentLexeme = lexer.getLexeme();
         return result;
     }
 
     /**
-     * atom = number
+     * atom = number | (expr)
      */
     private int parseAtom()
             throws IOException {
-        if (currentLexeme == null || currentLexeme.getType() != LexemeType.NUMBER) {
-            throw new IllegalStateException("Failed to parse atom: " + currentLexeme + " is not a number");
+        LexemeType type = currentLexeme.getType();
+        int result;
+        if (type == LexemeType.NUMBER) {
+            result = Integer.parseInt(currentLexeme.getValue());
+        } else if (type == LexemeType.OPEN_BRACKET) {
+            currentLexeme = lexer.getLexeme();
+            result = parseExpression();
+
+            if (currentLexeme.getType() != LexemeType.CLOSE_BRACKET) {
+                throw new IllegalStateException("Expected close bracket lexeme, found: " + currentLexeme);
+            }
+        } else {
+            throw new IllegalStateException("Failed to parse atom on lexeme: " + currentLexeme);
         }
-        int result = Integer.parseInt(currentLexeme.getValue());
+
         currentLexeme = lexer.getLexeme();
         return result;
     }
