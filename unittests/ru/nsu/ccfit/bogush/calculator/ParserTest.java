@@ -24,6 +24,7 @@ public class ParserTest {
         testCase(3, "2+1");
         testCase(2, "2+0");
         testCase(1, "0+1");
+        testCase(10*11/2, "0+1+2+3+4+5+6+7+8+9+10");
     }
 
     @Test
@@ -32,6 +33,7 @@ public class ParserTest {
         testCase(0, "0-0");
         testCase(7, "10-3");
         testCase(-5, "10-15");
+        testCase(-10*11/2, "0-1-2-3-4-5-6-7-8-9-10");
     }
 
     @Test
@@ -72,8 +74,25 @@ public class ParserTest {
     public void pow()
             throws Exception {
         testCase(9, "3^2");
-        testCase(0, "3^(0-1)");
-        testCase(9, "(0-3)^(2)");
-        testCase(-27, "(0-3)^(3)");
+        testCase(0, "3^-1");
+        testCase(9, "(-3)^2");
+        testCase(-27, "(-3)^3");
+    }
+
+    @Test
+    public void unaryMinus()
+            throws Exception {
+        testCase(-1, " -1 ");
+        testCase(1, "-1 + 2");
+    }
+
+    @Test
+    public void complexExpressions()
+            throws Exception {
+        testCase(6, "2 + 2 * 2");
+        testCase(8, "(2 + 2) * 2");
+        testCase(16, "(2 + 2) * 2 ^ 2");
+        testCase(512, "2 ^ 3 ^ 2");
+        testCase(4, "1+(2-(3*(4/(5^6)/(-7))*8)-9)+10");
     }
 }
