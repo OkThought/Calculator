@@ -67,4 +67,13 @@ public class ParserTest {
         testCase(3, "6 / 2");
         testCase(0, "0 / 5");
     }
+
+    @Test
+    public void pow()
+            throws Exception {
+        testCase(9, "3^2");
+        testCase(0, "3^(0-1)");
+        testCase(9, "(0-3)^(2)");
+        testCase(-27, "(0-3)^(3)");
+    }
 }
