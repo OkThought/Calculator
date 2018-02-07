@@ -41,20 +41,36 @@ public class Parser {
     }
 
     /**
-     * @code term = atom * / atom * / ...
+     * term = factor * / factor * / ...
      */
     private int parseTerm()
             throws IOException {
-        int result = parseAtom();
+        int result = parseFactor();
         LexemeType type;
         type = currentLexeme.getType();
         while (type == LexemeType.MULT || type == LexemeType.DIV) {
             currentLexeme = lexer.getLexeme();
             if (type == LexemeType.MULT) {
-                result *= parseAtom();
+                result *= parseFactor();
             } else {
-                result /= parseAtom();
+                result /= parseFactor();
             }
+            type = currentLexeme.getType();
+        }
+        return result;
+    }
+
+    /**
+     * factor = atom ^ atom
+     */
+    private int parseFactor()
+            throws IOException {
+        int result = parseAtom();
+        LexemeType type;
+        type = currentLexeme.getType();
+        while (type == LexemeType.POWER) {
+            currentLexeme = lexer.getLexeme();
+            result = (int) Math.pow(result, parseAtom());
             type = currentLexeme.getType();
         }
         return result;
