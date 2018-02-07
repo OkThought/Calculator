@@ -24,17 +24,37 @@ public class Parser {
     }
 
     /**
-     * expr = atom ± atom ± ...
+     * expr = term ± term ± ...
      */
     private int parseExpression()
             throws IOException {
-        int result = parseAtom();
+        int result = parseTerm();
         LexemeType type;
         type = currentLexeme.getType();
         while (type == LexemeType.PLUS || type == LexemeType.MINUS) {
             int sign = type == LexemeType.PLUS ? 1 : -1;
             currentLexeme = lexer.getLexeme();
-            result += sign * parseAtom();
+            result += sign * parseTerm();
+            type = currentLexeme.getType();
+        }
+        return result;
+    }
+
+    /**
+     * @code term = atom * / atom * / ...
+     */
+    private int parseTerm()
+            throws IOException {
+        int result = parseAtom();
+        LexemeType type;
+        type = currentLexeme.getType();
+        while (type == LexemeType.MULT || type == LexemeType.DIV) {
+            currentLexeme = lexer.getLexeme();
+            if (type == LexemeType.MULT) {
+                result *= parseAtom();
+            } else {
+                result /= parseAtom();
+            }
             type = currentLexeme.getType();
         }
         return result;
