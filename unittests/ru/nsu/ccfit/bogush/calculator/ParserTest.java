@@ -52,4 +52,19 @@ public class ParserTest {
             throws Exception {
         solve("(2+2");
     }
+
+    @Test
+    public void mult()
+            throws Exception {
+        testCase(6, "3 * 2");
+        testCase(0, "123 * 0");
+        testCase(0, "0 * 123");
+    }
+
+    @Test
+    public void div()
+            throws Exception {
+        testCase(3, "6 / 2");
+        testCase(0, "0 / 5");
+    }
 }
