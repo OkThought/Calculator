@@ -61,18 +61,32 @@ public class Parser {
     }
 
     /**
-     * factor = atom ^ atom
+     * factor = power ^ factor | power
      */
     private int parseFactor()
             throws IOException {
-        int result = parseAtom();
+        int result = parsePower();
         LexemeType type;
         type = currentLexeme.getType();
-        while (type == LexemeType.POWER) {
+        if (type == LexemeType.POWER) {
             currentLexeme = lexer.getLexeme();
-            result = (int) Math.pow(result, parseAtom());
-            type = currentLexeme.getType();
+            result = (int) Math.pow(result, parseFactor());
         }
+        return result;
+    }
+
+    /**
+     * power = -atom | atom
+     */
+    private int parsePower()
+            throws IOException {
+        boolean minus = currentLexeme.getType() == LexemeType.MINUS;
+        int sign = 1;
+        if (minus) {
+            currentLexeme = lexer.getLexeme();
+            sign = -1;
+        }
+        int result = sign * parseAtom();
         return result;
     }
 
